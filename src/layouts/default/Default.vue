@@ -5,7 +5,7 @@
     >
       <div fixed-tabs class="d-flex justify-space-evenly">
         <router-link to="/" class="w-200">
-          <v-tab class="text-black" value="Input"> Input </v-tab>
+          <v-tab class="text-black" value="Input"> Login </v-tab>
         </router-link>
         <router-link to="/register" class="w-200">
           <v-tab class="text-black" value="Register">
