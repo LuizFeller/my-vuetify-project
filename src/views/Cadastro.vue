@@ -6,6 +6,8 @@ export default {
       (value) => {
         if (!value) return "Please enter your username!";
           if (/.*[A-Z]/.test(value)) return "Just lowercase!";
+          if (/.*[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value)) return "No special characters!"
+          if (/.* /.test(value)) return "No empty space!"
           if (value.length < 3) return "At least 3 characters!";
        // return "Valid username!";
         return true;
