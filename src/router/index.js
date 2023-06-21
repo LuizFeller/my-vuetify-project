@@ -7,7 +7,7 @@ const routes = [
     component: () => import("@/layouts/default/Default.vue"),
     children: [
       {
-        path: "HOME",
+        path: "",
         name: "Home",
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
@@ -16,14 +16,8 @@ const routes = [
           import(/* webpackChunkName: "home" */ "@/views/Home.vue"),
       },
       {
-        path: "",
-        name: "Login",
-        component: () =>
-          import(/* webpackChunkName: "home" */ "@/views/Login.vue"),
-      },
-      {
-        path: "CADASTRO",
-        name: "Cadastro",
+        path: "REGISTER",
+        name: "Register",
         component: () =>
           import(/* webpackChunkName: "home" */ "@/views/Cadastro.vue"),
       },
@@ -37,3 +31,4 @@ const router = createRouter({
 });
 
 export default router;
+  

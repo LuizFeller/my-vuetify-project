@@ -1,5 +1,74 @@
+<script>
+export default {
+  data: () => ({
+    userName: "",
+    rules1: [
+      (value) => {
+        if (!value) return "Please enter your username!";
+          if (/.*[A-Z]/.test(value)) return "Just lowercase!";
+          if (value.length < 3) return "At least 3 characters!";
+       // return "Valid username!";
+        return true;
+      },
+    ],
+
+    email: "",
+    rules2: [
+      (value) => {
+        if (!value) return "Please enter your email address!";
+        if (!value.includes("@" + "."))  return "Invalid email!";
+        //if (/.+@.+./.test(value)) //return true
+        //if (!value.required(/.+@.+\..+/.test(value))) return true
+        return true;
+      },
+    ],
+    showPassword: false,
+    password: "",
+    rules3: [
+      (value) => {
+        if (!value) return "Please enter your password!";
+        const condition =
+          value.length < 8 ||
+          !/[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value) ||
+          !/[0-9]/.test(value);
+        console.log(condition);
+        if (condition) {
+          return "At least 8 characters, 1 special and 1 number!";
+        }
+        return true;
+      },
+    ],
+    confirmPassword: "",
+    isFormValid: true,
+    
+  }),
+
+  methods: {
+    handleSubmit(event) {
+      event.preventDefautl();
+      if (!this.FormValid) {
+        return;
+      }
+      //enviar os dados para api
+      //console.log(this.isFormValid);
+    },
+    rules4(value) {
+      return value === this.password || "Passwords do not match!";
+    },
+  },
+  computed: {
+    sheetClasses() {
+      return {
+        "bg-grey-lighten-1": this.$vuetify.display.smAndDown,
+        "bg-grey-lighten-2": this.$vuetify.display.md,
+        "bg-grey-lighten-3": this.$vuetify.display.lgAndUp,
+      };
+    },
+  },
+};
+</script>
 <template>
-  <v-sheet width="500" class="mx-auto" :class="sheetClasses">
+  <v-sheet width="600" class="mx-auto" :class="sheetClasses">
     <v-form @submit.prevent v-model="isFormValid">
       <v-text-field
         v-model="userName"
@@ -15,104 +84,29 @@
         v-model="password"
         :rules="rules3"
         label="Password"
+        :type="showPassword ? 'text' : 'password'"
       ></v-text-field>
       <v-text-field
         v-model="confirmPassword"
-        :rules="rules4"
-        label="Confirm Password"
+        :rules="[rules4]"
+        label="Confirm Password!"
+        :type="showPassword ? 'text' : 'password'"
       ></v-text-field>
+      <v-checkbox
+        v-model="showPassword"
+        label="show password"
+        color="black"
+      ></v-checkbox>
       <v-btn
         type="submit"
-        color="black"
+        color="light-green"
         :disabled="!isFormValid"
-        @click="handSubmit"
+        @click="login"
         block
         class="mt-2 d-flex flex-md-column"
-        >Cadastrar</v-btn
+        >Register</v-btn
       >
     </v-form>
   </v-sheet>
 </template>
 
-<script>
-export default {
-  data: () => ({
-    userName: "",
-    rules1: [
-      (value) => {
-          if (/.*[A-Z]/.test(value)) return "Please enter your username with lowercase!";
-          if (/^.+$/.test(value))
-         //if (value.length <= 2) 
-        return "Valid username!";
-      },
-    ],
-    isFormValid: true,
-
-    email: "",
-    rules2: [
-      (value) => {
-        if (!value) return "Please enter your email address!";
-        if (!value.includes("@" + ".")) return true;
-        //if (/.+@.+./.test(value)) //return true
-        //if (!value.required(/.+@.+\..+/.test(value))) return true
-        return "Valid email!";
-      },
-    ],
-    isFormValid: true,
-
-    password: "",
-    rules3: [
-      (value) => {
-        if (!value) return "Please enter your password!";
-        const condition =
-          value.length < 8 ||
-          !/[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value) ||
-          !/[0-9]/.test(value);
-        console.log(condition);
-        if (condition) {
-          return "No mínimo 8 caracteres, sendo 1 especial e 1 número";
-        }
-        return true;
-      },
-    ],
-    isFormValid: true,
-
-    confirmPassword: "",
-    rules4: [
-      (value) => {
-        if (!value) return "Please enter your password!";
-        const condition =
-          value.length < 8 ||
-          !/[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value) ||
-          !/[0-9]/.test(value);
-        console.log(condition);
-        if (condition) {
-          return "No mínimo 8 caracteres, sendo 1 especial e 1 número";
-        }
-        return true;
-      },
-    ],
-    isFormValid: true,
-  }),
-  methods: {
-    handdledSubmit(event) {
-      event.preventDefautl();
-      if (!this.isFormValid) {
-        alert("Preencha direito, por favor!");
-        return;
-      }
-      //enviar os dados para api
-      console.log(this.isFormValid);
-    },
-  },
-  computed: {
-    sheetClasses() {
-      return {
-        "bg-grey": this.$vuetify.display.smAndDown,
-        "bg-green": this.$vuetify.display.md,
-        "bg-yellow": this.$vuetify.display.lgAndUp,
-      };
-    },
-  },
-};
-</script>
