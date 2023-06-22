@@ -6,24 +6,24 @@ export default {
     email: "",
     rules1: [
       (value) => {
-       if (!value) return "Please enter your email address!";
+        if (!value) return "Please enter your email address!";
         if (!value.includes("@" && "." && "com")) return "Invalid email";
-        //if (/.+@.+./.test(value)) 
+        //if (/.+@.+./.test(value))
         //if (!value.required(/.+@.+\..+/.test(value))) return true
-       // return "Valid email!";
-      return true;
+        // return "Valid email!";
+        return true;
       },
     ],
     isFormValid: true,
-    
+
     password: "",
     rules2: [
       (value) => {
         if (!value) return "Please enter your password!";
         const condition =
-        value.length < 8 ||
-        !/[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value) ||
-        !/[0-9]/.test(value);
+          value.length < 8 ||
+          !/[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value) ||
+          !/[0-9]/.test(value);
         //console.log(condition);
         if (condition) {
           // return "No mínimo 8 caracteres, sendo 1 especial e 1 número";
@@ -33,7 +33,7 @@ export default {
       },
     ],
     isFormValid: true,
-    showPassword: ""
+    showPassword: "",
   }),
   methods: {
     async handSubmit() {
@@ -41,8 +41,19 @@ export default {
         email: this.email,
         password: this.password,
       };
+      console.log(payload);
 
- try {
+      try {
+        const { data } = await this.login(payload);
+        alert("login com sucesso");
+        const { access_token } = data;
+        localStorage.setItem("access_token", access_token);
+      } catch (err) {
+        alert("Algo deu errado");
+      }
+      },
+
+     /*  try {
         await this.login(payload);
         alert("usuário logado com sucesso");
         this.$router.push("/login");
@@ -54,18 +65,17 @@ export default {
           alert("Algo deu errado. Pedimos desculpas");
         }
       }
-    },
+    }, */
 
-
-      /* event.preventDefautl();
+    /* event.preventDefautl();
       if (!this.isFormValid) {
         alert("Preencha direito, por favor!");
         return;
       } */
-      //enviar os dados para api
-     // console.log(this.isFormValid);
-    },
-  
+    //enviar os dados para api
+    // console.log(this.isFormValid);
+  },
+
   computed: {
     sheetClasses() {
       return {
@@ -92,9 +102,10 @@ export default {
         label="Password"
       ></v-text-field>
       <v-checkbox-btn
-      v-model="showPassword"
-      label="Show password!"
-      color="black">
+        v-model="showPassword"
+        label="Show password!"
+        color="black"
+      >
       </v-checkbox-btn>
       <v-btn
         type="submit"
@@ -108,4 +119,3 @@ export default {
     </v-form>
   </v-sheet>
 </template>
-
