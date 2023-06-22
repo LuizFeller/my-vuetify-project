@@ -1,11 +1,13 @@
 <script>
+import { authApiMixin } from "@/api/auth";
 export default {
+  mixins: [authApiMixin],
   data: () => ({
     email: "",
     rules1: [
       (value) => {
        if (!value) return "Please enter your email address!";
-        if (!value.includes("@" + ".")) return "Invalid email";
+        if (!value.includes("@" && "." && "com")) return "Invalid email";
         //if (/.+@.+./.test(value)) 
         //if (!value.required(/.+@.+\..+/.test(value))) return true
        // return "Valid email!";
@@ -34,16 +36,36 @@ export default {
     showPassword: ""
   }),
   methods: {
-    handSubmit(event) {
-      event.preventDefautl();
+    async handSubmit() {
+      const payload = {
+        email: this.email,
+        password: this.password,
+      };
+
+ try {
+        await this.login(payload);
+        alert("usuário logado com sucesso");
+        this.$router.push("/login");
+      } catch (err) {
+        const status = err.response.status;
+        if (status >= 500 && status < 600) {
+          alert("Ocorreu um erro no servidor! Tente mais tarde");
+        } else {
+          alert("Algo deu errado. Pedimos desculpas");
+        }
+      }
+    },
+
+
+      /* event.preventDefautl();
       if (!this.isFormValid) {
         alert("Preencha direito, por favor!");
         return;
-      }
+      } */
       //enviar os dados para api
-      console.log(this.isFormValid);
+     // console.log(this.isFormValid);
     },
-  },
+  
   computed: {
     sheetClasses() {
       return {

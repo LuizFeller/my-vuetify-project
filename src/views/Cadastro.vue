@@ -1,15 +1,18 @@
 <script>
+import { authApiMixin } from "@/api/auth";
 export default {
+  mixins: [authApiMixin],
   data: () => ({
     userName: "",
     rules1: [
       (value) => {
         if (!value) return "Please enter your username!";
-          if (/.*[A-Z]/.test(value)) return "Just lowercase!";
-          if (/.*[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value)) return "No special characters!"
-          if (/.* /.test(value)) return "No empty space!"
-          if (value.length < 3) return "At least 3 characters!";
-       // return "Valid username!";
+        if (/.*[A-Z]/.test(value)) return "Just lowercase!";
+        if (/.*[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value))
+          return "No special characters!";
+        if (/.* /.test(value)) return "No empty space!";
+        if (value.length < 3) return "At least 3 characters!";
+        // return "Valid username!";
         return true;
       },
     ],
@@ -18,7 +21,7 @@ export default {
     rules2: [
       (value) => {
         if (!value) return "Please enter your email address!";
-        if (!value.includes("@" + "."))  return "Invalid email!";
+        if (!value.includes("@" && "." && "com")) return "Invalid email!";
         //if (/.+@.+./.test(value)) //return true
         //if (!value.required(/.+@.+\..+/.test(value))) return true
         return true;
@@ -42,18 +45,32 @@ export default {
     ],
     confirmPassword: "",
     isFormValid: true,
-    
   }),
 
   methods: {
-    handleSubmit(event) {
-      event.preventDefautl();
-      if (!this.FormValid) {
-        return;
+    async handlesSubmit() {
+      const payload = {
+        username: this.userName,
+        email: this.email,
+        password: this.password,
+      };
+
+      try {
+        await this.register(payload);
+        alert("usuário criado com sucesso");
+        this.$router.push("/");
+      } catch (err) {
+        const status = err.response.status;
+        if (status >= 500 && status < 600) {
+          alert("Ocorreu um erro no servidor! Tente mais tarde");
+        } else {
+          alert("Algo deu errado. Pedimos desculpas");
+        }
       }
-      //enviar os dados para api
-      //console.log(this.isFormValid);
     },
+    //enviar os dados para api
+    //console.log(this.isFormValid);
+
     rules4(value) {
       return value === this.password || "Passwords do not match!";
     },
@@ -103,7 +120,7 @@ export default {
         type="submit"
         color="light-green"
         :disabled="!isFormValid"
-        @click="login"
+        @click="handlesSubmit"
         block
         class="mt-2 d-flex flex-md-column"
         >Register</v-btn
@@ -111,4 +128,3 @@ export default {
     </v-form>
   </v-sheet>
 </template>
-
