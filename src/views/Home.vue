@@ -20,7 +20,7 @@ export default {
     rules2: [
       (value) => {
         if (!value) return "Please enter your password!";
-        const condition =
+        /* const condition =
           value.length < 8 ||
           !/[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value) ||
           !/[0-9]/.test(value);
@@ -28,7 +28,7 @@ export default {
         if (condition) {
           // return "No mínimo 8 caracteres, sendo 1 especial e 1 número";
           return "At least 8 characters, 1 special and 1 number!";
-        }
+        } */
         return true;
       },
     ],
