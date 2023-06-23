@@ -47,7 +47,7 @@ export default {
         const { access_token } = data;
 
         localStorage.setItem("access_token", access_token);
-        this.$router.push('/dashboard')
+        this.$router.push('/app')
 
       } catch (err) {
         alert("Algo deu errado");
@@ -77,5 +77,7 @@ export default {
       <v-btn type="submit" color="light-green" :disabled="!isFormValid" @click="handSubmit" block
         class="mt-2 d-flex flex-md-column">Submit</v-btn>
     </v-form>
+
+    dúvidas -> 41 9.8756-0475
   </v-sheet>
 </template>
