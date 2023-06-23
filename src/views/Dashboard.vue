@@ -3,7 +3,8 @@
 <v-card-title>{{  list.title }}
 
 </v-card-title>
-</v-card>v-card>
+
+</v-card>teste hoje
 
 </template>
 
