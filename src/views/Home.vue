@@ -48,10 +48,13 @@ export default {
         alert("login com sucesso");
         const { access_token } = data;
         localStorage.setItem("access_token", access_token);
+        console.log(access_token);
+        this.$router.push("/dashboard");
       } catch (err) {
         alert("Algo deu errado");
       }
       },
+    },
 
      /*  try {
         await this.login(payload);
@@ -74,7 +77,6 @@ export default {
       } */
     //enviar os dados para api
     // console.log(this.isFormValid);
-  },
 
   computed: {
     sheetClasses() {
