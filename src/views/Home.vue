@@ -47,7 +47,7 @@ export default {
         const { access_token } = data;
 
         localStorage.setItem("access_token", access_token);
-        this.$router.push('/dashboard')
+        this.$router.push('/app')
 
       } catch (err) {
         alert("Algo deu errado");
