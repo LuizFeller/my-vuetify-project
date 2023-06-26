@@ -1,18 +1,21 @@
 <script>
 
 export default {
-    props:{
+    props: {
         id: String,
         name: String,
     },
-    data(){
-        return{
+    data() {
+        return {
             newNameList: '',
         }
     },
     methods: {
-        handleUpdateListName(){
+        handleUpdateListName() {
             this.$emit('new-name-list', this.newNameList, this.id)
+        },
+        closeModal() {
+            this.$emit('close-modal')
         }
     }
 }
@@ -21,11 +24,18 @@ export default {
 
 <template>
     <v-card color="rgba(0, 0, 0, 0.5)" class="modal d-flex align-center justify-center">
-        <v-card class="h-25 w-50 pa-4">
+        <v-card class="w-50 pa-4">
             <v-card-subtitle>{{ id }}</v-card-subtitle>
             <v-card-title>Nome atual da lista: {{ name }}</v-card-title>
             <v-text-field v-model="newNameList" placeholder="Novo Nome"></v-text-field>
-            <v-btn @click="handleUpdateListName">Atualizar</v-btn>
+            <v-action class="d-flex justify-center">
+                <v-btn @click="handleUpdateListName" class="w-25 mx-2">
+                    Atualizar
+                </v-btn>
+                <v-btn @click="closeModal" class="w-25 mx-2">
+                    Fechar
+                </v-btn>
+            </v-action>
         </v-card>
     </v-card>
 </template>

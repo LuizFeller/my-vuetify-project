@@ -123,7 +123,7 @@ export default {
     <ModalNewList @new-list="createNewList" v-if="openNewList"></ModalNewList>
 
     <!-- MODAL DE EDITAR LISTA -->
-    <EditListTitle @new-name-list="handleEditNameList" v-if="showModalEditList" :id="this.currenteId"
+    <EditListTitle @new-name-list="handleEditNameList" @close-modal="this.showModalEditList = false" v-if="showModalEditList" :id="this.currenteId"
       :name="this.currentTitle"></EditListTitle>
 
     <!-- LOADING MODAL -->
