@@ -83,7 +83,7 @@ export default {
 
     /* REDIRECIONA PARA TELA DE DETALHE DA LISTA */
     RedirectDetailItem(id) {
-      this.$router.push(`/home/${id}`)
+      this.$router.push(`/${id}`)
     },
 
   },
@@ -101,6 +101,8 @@ export default {
       </v-btn>
     </nav>
 
+
+    <!-- COMPONENTE EM POTENCIAL -->
     <v-card v-for="list in lists">
       <v-card-title> {{ list.title }} </v-card-title>
       <v-card-subtitle> {{ list.id }} </v-card-subtitle>
