@@ -13,6 +13,12 @@ export const toDoListApiMixin = {
     },
     async deleteList(id){
       return await privateApi.delete(`/lists/${id}`)
+    },
+    async editNameList(id, newName){
+      return await privateApi.patch(`/lists/${id}`, 
+      {
+        'title': newName
+      })
     }
   },
 };
