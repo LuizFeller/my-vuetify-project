@@ -1,83 +1,134 @@
 <script>
-import { authApiMixin } from "@/api/auth";
+
+import { toDoListApiMixin } from "@/api/toDoLists";
+import ModalNewList from '@/components/modal/new-list.vue'
+import EditListTitle from '@/components/modal/edit-name-list.vue'
+import Loading from '@/components/Loading.vue'
+
 export default {
-  mixins: [authApiMixin],
-  data: () => ({
-    email: "eduardo@mail.com",
-    rules1: [
-      (value) => {
-        if (!value) return "Please enter your email address!";
-        if (!value.includes("@" && "." && "com")) return "Invalid email";
-        //if (/.+@.+./.test(value))
-        //if (!value.required(/.+@.+\..+/.test(value))) return true
-        // return "Valid email!";
-        return true;
-      },
-    ],
-    isFormValid: true,
-
-    password: "1234",
-    rules2: [
-      (value) => {
-        if (!value) return "Please enter your password!";
-        /* const condition =
-          value.length < 8 ||
-          !/[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value) ||
-          !/[0-9]/.test(value);
-        //console.log(condition);
-        if (condition) {
-          // return "No mínimo 8 caracteres, sendo 1 especial e 1 número";
-          return "At least 8 characters, 1 special and 1 number!";
-        } */
-        return true;
-      },
-    ],
-    isFormValid: true,
-    showPassword: "",
-  }),
-  methods: {
-    async handSubmit() {
-      const payload = {
-        email: this.email,
-        password: this.password,
-      };
-
-      try {
-        const { data } = await this.login(payload);
-        const { access_token } = data;
-
-        localStorage.setItem("access_token", access_token);
-        this.$router.push('/app')
-
-      } catch (err) {
-        alert("Algo deu errado");
-      }
-    },
+  components: {
+    ModalNewList,
+    EditListTitle,
+    Loading,
   },
 
-  computed: {
-    sheetClasses() {
-      return {
-        "bg-grey-lighten-1": this.$vuetify.display.smAndDown,
-        "bg-grey-lighten-2": this.$vuetify.display.md,
-        "bg-grey-lighten-3": this.$vuetify.display.lgAndUp,
-      };
+  mixins: [toDoListApiMixin],
+
+  data() {
+    return {
+      lists: '',
+      items: '',
+      titleDialog: '',
+      openDialog: false,
+      openNewList: false,
+
+      showModalEditList: false,
+      currenteId: '',
+      currentTitle: '',
+
+      loading: false
+    }
+  },
+
+  methods: {
+    async getLists() {
+      this.loading = true
+      try {
+        const { data } = await this.list();
+        this.lists = data;
+      } catch (err) {
+        alert("Algo deu errado");
+      } finally {
+        this.loading = false
+      }
     },
+
+    async createNewList(title) {
+      this.loading = true
+
+      const { status } = await this.createList(title)
+      this.openNewList = false
+      this.handleWithError(status)
+    },
+    async handleDeleteItem(id) {
+      this.loading = true
+
+      const { status } = await this.deleteList(id);
+      this.handleWithError(status)
+    },
+
+    /* FUNÇÂO PARA EDITAR NOME DA LIST */
+    openModalUpdateList(id, title) {
+      this.currenteId = id
+      this.currentTitle = title
+
+      this.showModalEditList = true
+    },
+    async handleEditNameList(newName, id) {
+      this.loading = true
+      const { status } = await this.editNameList(id, newName)
+      this.handleWithError(status)
+      this.showModalEditList = false
+    },
+
+    /* FUNÇÂO QUE TRATA RETORNO DA API */
+    handleWithError(status) {
+      this.loading = false
+      if (status >= 200 && status < 300) {
+        this.getLists()
+      } else {
+        alert("Deu erro")
+      }
+    },
+
+    /* REDIRECIONA PARA TELA DE DETALHE DA LISTA */
+    RedirectDetailItem(id) {
+      this.$router.push(`/${id}`)
+    },
+
+  },
+  mounted() {
+    this.getLists();
   },
 };
 </script>
-<template>
-  <v-sheet width="600" class="" :class="sheetClasses">
-    <v-form @submit.prevent v-model="isFormValid">
-      <v-text-field v-model="email" :rules="rules1" label="Email"></v-text-field>
-      <v-text-field v-model="password" :rules="rules2" :type="showPassword ? 'text' : 'password'"
-        label="Password"></v-text-field>
-      <v-checkbox-btn v-model="showPassword" label="Show password!" color="black">
-      </v-checkbox-btn>
-      <v-btn type="submit" color="light-green" :disabled="!isFormValid" @click="handSubmit" block
-        class="mt-2 d-flex flex-md-column">Submit</v-btn>
-    </v-form>
 
-    dúvidas -> 41 9.8756-0475
-  </v-sheet>
+<template>
+  <div>
+    <nav class="w-100 bg-blue d-flex justify-center">
+      <v-btn @click="openNewList = true" variant="plain">
+        CRIAR LISTA
+      </v-btn>
+    </nav>
+
+
+    <!-- COMPONENTE EM POTENCIAL -->
+    <v-card v-for="list in lists">
+      <v-card-title> {{ list.title }} </v-card-title>
+      <v-card-subtitle> {{ list.id }} </v-card-subtitle>
+      <v-card-actions>
+        <v-btn color="blue" @click="RedirectDetailItem(list.id)">
+          DETALHE
+        </v-btn>
+        <v-btn color="blue" @click="openModalUpdateList(list.id, list.title)">
+          EDITAR
+        </v-btn>
+        <v-btn color="blue" @click="handleDeleteItem(list.id)">
+          DELETAR
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <!-- CRIAR NOVA LISTA -->
+    <ModalNewList @new-list="createNewList" v-if="openNewList"></ModalNewList>
+
+    <!-- MODAL DE EDITAR LISTA -->
+    <EditListTitle @new-name-list="handleEditNameList" @close-modal="this.showModalEditList = false" v-if="showModalEditList" :id="this.currenteId"
+      :name="this.currentTitle"></EditListTitle>
+
+    <!-- LOADING MODAL -->
+    <Loading v-if="loading"></Loading>
+  </div>
 </template>
+
+<style></style>
