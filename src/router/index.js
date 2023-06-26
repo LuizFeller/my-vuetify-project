@@ -3,13 +3,13 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
-    path: "/app",
+    path: "/home",
     component: () => import("@/layouts/default/App.vue"),
     children: [
       {
         path: "",
-        name: "dashboard",
-        component: () => import("@/views/Dashboard.vue"),
+        name: "Home",
+        component: () => import("@/views/Home.vue"),
       },
       {
         path: ":id",
@@ -20,15 +20,15 @@ const routes = [
   },
   {
     path: "/",
-    component: () => import("@/layouts/default/Default.vue"),
+    component: () => import("@/layouts/default/Access.vue"),
     children: [
       {
         path: "",
-        name: "Home",
-        component: () => import("@/views/Home.vue"),
+        name: "Login",
+        component: () => import("@/views/Login.vue"),
       },
       {
-        path: "REGISTER",
+        path: "Register",
         name: "Register",
         component: () => import("@/views/Cadastro.vue"),
       },
