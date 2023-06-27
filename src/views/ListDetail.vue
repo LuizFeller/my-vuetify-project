@@ -23,6 +23,10 @@ export default {
             showNewItemForm: false,
 
             loading: false,
+            snackbar: false,
+
+            selected: [],
+            seeAllTasks: '',
         }
     },
     async mounted() {
@@ -38,92 +42,125 @@ export default {
                 this.loading = false
             } catch {
                 alert("Deu erro... D:")
+                this.loading = false
             }
         },
 
-        async handleResolveItem(id) {
-            this.loading = true
-            const { status } = await this.ResolveItem(id)
-            this.handleWithError(status)
+        handleResolveItem() {
+            this.handleWithResponse(Promise.all(this.selected.map(el => this.ResolveItem(el))))
+            this.selected = []
         },
+
         async handleShowDetail(id) {
-            this.loading = true
-            const { status, data } = await this.DetailItem(id)
-            this.handleWithError(status)
-            this.itemDetailInfos = data
+            const res = await this.handleWithResponse(this.DetailItem(id))
+            this.itemDetailInfos = res.data
             this.showModalDetail = true
         },
-        async handleDeleleItem(id) {
-            this.loading = true
-            const { status } = await this.deleteItem(id)
-            this.handleWithError(status)
+
+        handleDeleleItem(id) {
+            this.handleWithResponse(this.deleteItem(id))
         },
 
-        async newItem(title, deadline) {
-            this.loading = true
+        newItem(title, deadline) {
             const id = this.$route.params.id
-            const { status } = await this.createItem(id, title, deadline)
-            this.handleWithError(status)
+            this.handleWithResponse(this.createItem(id, title, deadline))
             this.showNewItemForm = false
-            this.getItems()
         },
 
-        /* FUNÇÂO QUE TRATA RETORNO DA API */
-        handleWithError(status) {
-            if (status >= 200 && status < 300) {
-                this.getItems()
-            } else {
+        /* FUNÇÂO QUE TRATA RETORNO DA API, RECEBE UMA PROMISSE E CONFORME RESULTADO EXECUTA AÇÂO */
+        async handleWithResponse(promise) {
+            try {
+                this.loading = true
+                return await promise
+            } catch {
                 alert("Deu erro")
+            } finally {
+                this.getItems()
+                this.loading = false
             }
-
-            this.loading = false
         },
 
         /* METODO DE ESTILIZAÇÂO */
         bgColor(a) {
-            return a == true ? 'rgb(144, 238, 144)' : 'rgb(240, 128, 128)'
+            return a == true ? 'bg-light-green-lighten-2' : 'bg-red-lighten-3'
         },
-    },
-    computed: {
-        organizeDeadlineDate() {
+
+        /* ORGANIZAR A LISTA CONFORME DEADLINE */
+        organizeDeadlineDate(state) {
             if (!this.items) return ''
             const ordened = this.items.sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
-            return ordened.filter(elemento => elemento.done == false).concat(ordened.filter(elemento => elemento.done == true))
+            const undone = ordened.filter(elemento => elemento.done == false)
+            const done = ordened.filter(elemento => elemento.done == true)
+
+            if (state) return undone.concat(done)
+            if(undone.length == 0) this.snackbar = true;
+            return undone
         }
-    }
+    },
 }
 
 </script>
 
 <template>
-    <span @click="this.$router.go(-1)" class="c-pointer pa-4 material-symbols-outlined">
-        arrow_back_ios_new
-    </span>
+    <v-row class="d-flex align-center">
+        <v-col>
+            <span @click="this.$router.go(-1)" class="c-pointer pa-4 material-symbols-outlined">
+                arrow_back_ios_new
+            </span>
+        </v-col>
 
-    <v-card>
-        <v-card class="w-100 d-flex justify-center pa-4">
-            <v-btn @click="showNewItemForm = true">
+        <v-col class="d-flex justify-center">
+            <v-btn class="ma-2" @click="showNewItemForm = true">
                 CRIAR NOVO ITEM
             </v-btn>
-        </v-card>
+        </v-col>
+        <v-col class="d-flex justify-center" @click="handleResolveItem">
+            <v-btn class="ma-2">
+                SALVAR
+            </v-btn>
+        </v-col>
 
-        <v-card v-for="item in organizeDeadlineDate">
-            <v-card class="d-flex align-center ma-2 elevation-2" :color="bgColor(item.done)">
-                <v-card :title=formatDate(item.deadline) :color="bgColor(item.done)"></v-card>
-                <v-card-title class="w-25">{{ item.title }}</v-card-title>
-                <v-card-text class="text-white">.</v-card-text>
-                <v-card-actions>
-                    <v-btn @click="handleResolveItem(item.id)" v-show="!item.done">MARCAR COMO RESOLVIDO</v-btn>
-                    <v-btn @click="handleShowDetail(item.id)">VER DETALHES</v-btn>
-                    <v-btn @click="handleDeleleItem(item.id)">APAGAR</v-btn>
-                </v-card-actions>
-            </v-card>
+        <v-col class="d-flex align-center">
+            <h4> Ver todas as tarefas:</h4>
+            <v-checkbox class="w-25 d-flex" v-model="seeAllTasks" />
+        </v-col>
+    </v-row>
 
-        </v-card>
-    </v-card>
+    <v-snackbar v-model="snackbar" color="green">
+      Não há tarefas abertas!
+      <template v-slot:actions>
+        <v-btn
+          color="white"
+          variant="tonal"
+          @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <div v-for="item in organizeDeadlineDate(seeAllTasks)">
+        <v-row class="d-flex align-center ma-2 elevation-2" :class="bgColor(item.done)">
+            <v-col cols="3" :color="bgColor(item.done)">{{ formatDate(item.deadline) }}</v-col>
+            <v-col cols="6" class="w-25">{{ item.title }}</v-col>
+            <v-col cols="1">
+                <v-checkbox class="d-flex" v-model="selected" :value="item.id" v-if="!item.done">
+                </v-checkbox></v-col>
+            <v-col cols="1"><v-btn @click="handleShowDetail(item.id)">
+                    <span class="material-symbols-outlined">
+                        info
+                    </span></v-btn>
+            </v-col>
+            <v-col cols="1"><v-btn @click="handleDeleleItem(item.id)">
+                    <span class="material-symbols-outlined">
+                        delete
+                    </span></v-btn>
+            </v-col>
+        </v-row>
+    </div>
+
 
     <!-- MODAL DE NOVO ITEM NA LISTA -->
-    <ModalNewList v-if="showNewItemForm" @new-item="newItem" @close-modal="this.showNewItemForm=false"></ModalNewList>
+    <ModalNewList v-if="showNewItemForm" @new-item="newItem" @close-modal="this.showNewItemForm = false"></ModalNewList>
 
     <!-- MODAL DE DETALHE DO ITEM -->
     <modalDetail v-if="showModalDetail" :infos="itemDetailInfos" @closeModal="this.showModalDetail = false"></modalDetail>
