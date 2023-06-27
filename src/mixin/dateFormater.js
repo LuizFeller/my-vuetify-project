@@ -1,11 +1,13 @@
 export const dateFormater = {
     methods:{
         formatDate(date) {
+            if(!date) return ''
             const pureDate = date.split("T")[0].split("-").reverse().join("/")
             const pureHour = date.split("T")[1].split(".")[0]
             return `${pureDate} - ${pureHour}`
         },
         formatDateRes(date) {
+            if(!date) return ''
             const pureDate = date.split("T")[0].split("-").reverse().join("/")
             const pureHour = date.split("T")[1].split(".")[0]
             const hour = pureHour.split(":")[0]-3
