@@ -1,19 +1,23 @@
 <script>
 
+
 export default {
-    data(){
-        return{
+    data() {
+        return {
             itemName: '',
-            deadLineDate: '',
-            deadLineHour: '',           
+            deadLineDate: `${new Date().getFullYear()}-0${new Date().getMonth()+1}-${new Date().getDate()}`,
+            deadLineHour: `${new Date().getHours()}:${new Date().getMinutes()}`,
         }
     },
     methods: {
-        handleCreateItemList(){
+        handleCreateItemList() {
             const formatedDate = `${this.deadLineDate}T${this.deadLineHour}:00.000Z`
             this.$emit('new-item', this.itemName, formatedDate)
+        },
+        closeModal(){
+            this.$emit('close-modal')
         }
-    }
+    },
 }
 
 </script>
@@ -23,9 +27,12 @@ export default {
         <v-card class="w-25 pa-4">
             <v-card-title>Nome da Tarefa</v-card-title>
             <v-text-field v-model="itemName"></v-text-field>
-            <v-text-field v-model="deadLineDate" type="date"></v-text-field>
-            <v-text-field v-model="deadLineHour" type="time"></v-text-field>
-            <v-btn @click="handleCreateItemList">Criar</v-btn>
+            <v-text-field v-model="deadLineDate" type="date" :value="deadLineDate"></v-text-field>
+            <v-text-field v-model="deadLineHour" type="time" :value="deadLineHour"></v-text-field>
+            <v-actions class="d-flex justify-center">
+                <v-btn @click="handleCreateItemList" class="w-25 mx-2" >Criar</v-btn>
+                <v-btn @click="closeModal" class="w-25 mx-2" >Fechar</v-btn>
+            </v-actions>
         </v-card>
     </v-card>
 </template>

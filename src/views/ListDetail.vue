@@ -2,6 +2,8 @@
 
 import { toDoListApiMixin } from "@/api/toDoLists";
 import { toDoItemsApiMixin } from "@/api/toDoItems";
+import { dateFormater } from '@/mixin/dateFormater'
+
 import modalDetail from "@/components/modal/detail-item.vue"
 import ModalNewList from '@/components/modal/new-item.vue'
 import Loading from '@/components/Loading.vue'
@@ -12,7 +14,7 @@ export default {
         ModalNewList,
         Loading,
     },
-    mixins: [toDoListApiMixin, toDoItemsApiMixin],
+    mixins: [toDoListApiMixin, toDoItemsApiMixin, dateFormater],
     data() {
         return {
             items: '',
@@ -81,19 +83,11 @@ export default {
         bgColor(a) {
             return a == true ? 'rgb(144, 238, 144)' : 'rgb(240, 128, 128)'
         },
-
-        /* FORMATAÇÂO DA DATA */
-        formatDate(date) {
-            const pureDate = date.split("T")[0].split("-").reverse().join("/")
-            const pureHour = date.split("T")[1].split(".")[0]
-            return `${pureDate} - ${pureHour}`
-        },
     },
     computed: {
         organizeDeadlineDate() {
             if (!this.items) return ''
             const ordened = this.items.sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
-            console.log(ordened);
             return ordened.filter(elemento => elemento.done == false).concat(ordened.filter(elemento => elemento.done == true))
         }
     }
@@ -129,7 +123,7 @@ export default {
     </v-card>
 
     <!-- MODAL DE NOVO ITEM NA LISTA -->
-    <ModalNewList v-if="showNewItemForm" @new-item="newItem"></ModalNewList>
+    <ModalNewList v-if="showNewItemForm" @new-item="newItem" @close-modal="this.showNewItemForm=false"></ModalNewList>
 
     <!-- MODAL DE DETALHE DO ITEM -->
     <modalDetail v-if="showModalDetail" :infos="itemDetailInfos" @closeModal="this.showModalDetail = false"></modalDetail>

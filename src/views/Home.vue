@@ -120,7 +120,7 @@ export default {
     </v-card>
 
     <!-- CRIAR NOVA LISTA -->
-    <ModalNewList @new-list="createNewList" v-if="openNewList"></ModalNewList>
+    <ModalNewList @new-list="createNewList" @close-modal="this.openNewList = false" v-if="openNewList"></ModalNewList>
 
     <!-- MODAL DE EDITAR LISTA -->
     <EditListTitle @new-name-list="handleEditNameList" @close-modal="this.showModalEditList = false" v-if="showModalEditList" :id="this.currenteId"
