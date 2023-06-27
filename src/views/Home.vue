@@ -1,18 +1,24 @@
 <script>
 
 import { toDoListApiMixin } from "@/api/toDoLists";
+import { toDoItemsApiMixin } from "@/api/toDoItems"
+
 import ModalNewList from '@/components/modal/new-list.vue'
 import EditListTitle from '@/components/modal/edit-name-list.vue'
 import Loading from '@/components/Loading.vue'
+
+import Summary from "@/components/Summary.vue";
+import { renderSlot } from "vue";
 
 export default {
   components: {
     ModalNewList,
     EditListTitle,
     Loading,
+    Summary,
   },
 
-  mixins: [toDoListApiMixin],
+  mixins: [toDoListApiMixin, toDoItemsApiMixin],
 
   data() {
     return {
@@ -26,7 +32,9 @@ export default {
       currenteId: '',
       currentTitle: '',
 
-      loading: false
+      loading: false,
+      showModalSummary: false,
+      summaryInfos: '',
     }
   },
 
@@ -86,6 +94,15 @@ export default {
       this.$router.push(`/${id}`)
     },
 
+    /* MONTA INFORMAÇÂO DE COMPONENTE RESUMO */
+    async HandleSummary(){
+      this.loading = true
+      const {status, data} = await this.GetAllItens()
+      this.summaryInfos = data
+      this.handleWithError(status)
+      this.showModalSummary = true
+    }
+
   },
   mounted() {
     this.getLists();
@@ -98,6 +115,9 @@ export default {
     <nav class="w-100 bg-blue d-flex justify-center">
       <v-btn @click="openNewList = true" variant="plain">
         CRIAR LISTA
+      </v-btn>
+      <v-btn @click="HandleSummary" variant="plain">
+        RESUMO
       </v-btn>
     </nav>
 
@@ -128,6 +148,9 @@ export default {
 
     <!-- LOADING MODAL -->
     <Loading v-if="loading"></Loading>
+
+    <Summary :summaryInfos="this.summaryInfos" @close-modal="this.showModalSummary = false" v-if="showModalSummary"></Summary>
+
   </div>
 </template>
 
