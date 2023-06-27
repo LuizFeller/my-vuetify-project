@@ -9,6 +9,9 @@ export default {
     methods: {
         handleCreateList(){
             this.$emit('new-list', this.listName)
+        },
+        closeModal(){
+            this.$emit('close-modal')
         }
     }
 }
@@ -20,7 +23,10 @@ export default {
         <v-card class="h-25 w-25 pa-4">
             <v-card-title>Nome da Lista</v-card-title>
             <v-text-field v-model="listName"></v-text-field>
-            <v-btn @click="handleCreateList">Criar</v-btn>
+            <v-actions class="d-flex justify-center">
+                <v-btn @click="handleCreateList" class="w-25 mx-2">Criar</v-btn>
+                <v-btn @click="closeModal" class="w-25 mx-2">Fechar</v-btn>
+            </v-actions>
         </v-card>
 
     </v-card>
