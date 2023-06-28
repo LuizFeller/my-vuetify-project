@@ -8,7 +8,8 @@ import EditListTitle from '@/components/modal/edit-name-list.vue'
 import Loading from '@/components/Loading.vue'
 
 import Summary from "@/components/Summary.vue";
-import { renderSlot } from "vue";
+import confirmDelete from "@/components/modal/confirm-delete.vue";
+
 
 export default {
   components: {
@@ -16,6 +17,7 @@ export default {
     EditListTitle,
     Loading,
     Summary,
+    confirmDelete
   },
 
   mixins: [toDoListApiMixin, toDoItemsApiMixin],
@@ -35,6 +37,9 @@ export default {
       loading: false,
       showModalSummary: false,
       summaryInfos: '',
+
+      deleteModalDeleteInfos: [],
+      showModalDeleteInfos: '',
     }
   },
 
@@ -51,41 +56,42 @@ export default {
       }
     },
 
-    async createNewList(title) {
-      this.loading = true
-
-      const { status } = await this.createList(title)
+    createNewList(title) {
+      this.handleWithResponse(this.createList(title))
       this.openNewList = false
-      this.handleWithError(status)
+    },
+
+    openDeleteConfirmModal(id, title) {
+      this.deleteModalDeleteInfos = [id, title]
+      this.showModalDeleteInfos = true
     },
     async handleDeleteItem(id) {
-      this.loading = true
-
-      const { status } = await this.deleteList(id);
-      this.handleWithError(status)
+      this.showModalDeleteInfos = false
+      this.handleWithResponse(this.deleteList(id))
     },
 
     /* FUNÇÂO PARA EDITAR NOME DA LIST */
     openModalUpdateList(id, title) {
       this.currenteId = id
       this.currentTitle = title
-
       this.showModalEditList = true
     },
-    async handleEditNameList(newName, id) {
-      this.loading = true
-      const { status } = await this.editNameList(id, newName)
-      this.handleWithError(status)
+    handleEditNameList(newName, id) {
+      this.handleWithResponse(this.editNameList(id, newName))
       this.showModalEditList = false
     },
 
-    /* FUNÇÂO QUE TRATA RETORNO DA API */
-    handleWithError(status) {
-      this.loading = false
-      if (status >= 200 && status < 300) {
+
+    /* FUNÇÂO QUE TRATA OS ERROS */
+    async handleWithResponse(promise) {
+      try {
+        this.loading = true
+        return await promise
+      } catch {
+        alert("Algo deu errado :(")
+      } finally {
         this.getLists()
-      } else {
-        alert("Deu erro")
+        this.loading = false
       }
     },
 
@@ -95,11 +101,9 @@ export default {
     },
 
     /* MONTA INFORMAÇÂO DE COMPONENTE RESUMO */
-    async HandleSummary(){
-      this.loading = true
-      const {status, data} = await this.GetAllItens()
-      this.summaryInfos = data
-      this.handleWithError(status)
+    async HandleSummary() {
+      const res = await this.handleWithResponse(this.GetAllItens())
+      this.summaryInfos = res.data
       this.showModalSummary = true
     }
 
@@ -133,7 +137,7 @@ export default {
         <v-btn color="blue" @click="openModalUpdateList(list.id, list.title)">
           EDITAR
         </v-btn>
-        <v-btn color="blue" @click="handleDeleteItem(list.id)">
+        <v-btn color="blue" @click="openDeleteConfirmModal(list.id, list.title)">
           DELETAR
         </v-btn>
       </v-card-actions>
@@ -143,13 +147,19 @@ export default {
     <ModalNewList @new-list="createNewList" @close-modal="this.openNewList = false" v-if="openNewList"></ModalNewList>
 
     <!-- MODAL DE EDITAR LISTA -->
-    <EditListTitle @new-name-list="handleEditNameList" @close-modal="this.showModalEditList = false" v-if="showModalEditList" :id="this.currenteId"
-      :name="this.currentTitle"></EditListTitle>
+    <EditListTitle v-if="showModalEditList" @new-name-list="handleEditNameList"
+      @close-modal="this.showModalEditList = false" :id="this.currenteId" :name="this.currentTitle"></EditListTitle>
 
     <!-- LOADING MODAL -->
     <Loading v-if="loading"></Loading>
 
-    <Summary :summaryInfos="this.summaryInfos" @close-modal="this.showModalSummary = false" v-if="showModalSummary"></Summary>
+    <!-- SUMMARY COMPONENT -->
+    <Summary :summaryInfos="this.summaryInfos" @close-modal="this.showModalSummary = false" v-if="showModalSummary">
+    </Summary>
+
+    <!-- MODAL DE CONFIRMAÇÂO DE DELEÇÂO -->
+    <confirmDelete v-if="showModalDeleteInfos" :infos="this.deleteModalDeleteInfos"
+      @close="this.showModalDeleteInfos = false" @confirm="handleDeleteItem"></confirmDelete>
 
   </div>
 </template>

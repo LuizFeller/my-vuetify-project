@@ -7,12 +7,14 @@ import { dateFormater } from '@/mixin/dateFormater'
 import modalDetail from "@/components/modal/detail-item.vue"
 import ModalNewList from '@/components/modal/new-item.vue'
 import Loading from '@/components/Loading.vue'
+import confirmDelete from "@/components/modal/confirm-delete.vue";
 
 export default {
     components: {
         modalDetail,
         ModalNewList,
         Loading,
+        confirmDelete,
     },
     mixins: [toDoListApiMixin, toDoItemsApiMixin, dateFormater],
     data() {
@@ -27,6 +29,9 @@ export default {
 
             selected: [],
             seeAllTasks: '',
+
+            deleteModalDeleteInfos: [],
+            showModalDeleteInfos: false,
         }
     },
     async mounted() {
@@ -57,7 +62,13 @@ export default {
             this.showModalDetail = true
         },
 
+        openConfirmModal(id, title){
+            this.deleteModalDeleteInfos = [id, title]
+            this.showModalDeleteInfos = true
+        },
+
         handleDeleleItem(id) {
+            this.showModalDeleteInfos = false
             this.handleWithResponse(this.deleteItem(id))
         },
 
@@ -126,18 +137,6 @@ export default {
         </v-col>
     </v-row>
 
-    <v-snackbar v-model="snackbar" color="green">
-      Não há tarefas abertas!
-      <template v-slot:actions>
-        <v-btn
-          color="white"
-          variant="tonal"
-          @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-
     <div v-for="item in organizeDeadlineDate(seeAllTasks)">
         <v-row class="d-flex align-center ma-2 elevation-2" :class="bgColor(item.done)">
             <v-col cols="3" :color="bgColor(item.done)">{{ formatDate(item.deadline) }}</v-col>
@@ -150,7 +149,7 @@ export default {
                         info
                     </span></v-btn>
             </v-col>
-            <v-col cols="1"><v-btn @click="handleDeleleItem(item.id)">
+            <v-col cols="1"><v-btn @click="openConfirmModal(item.id, item.title)">
                     <span class="material-symbols-outlined">
                         delete
                     </span></v-btn>
@@ -158,6 +157,18 @@ export default {
         </v-row>
     </div>
 
+    <!-- COMPONENTE DE AVISO SE CASO NÂO EXISTA POSTS -->
+    <v-snackbar v-model="snackbar" color="green">
+      Não há tarefas abertas!
+      <template v-slot:actions>
+        <v-btn
+          color="white"
+          variant="tonal"
+          @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
 
     <!-- MODAL DE NOVO ITEM NA LISTA -->
     <ModalNewList v-if="showNewItemForm" @new-item="newItem" @close-modal="this.showNewItemForm = false"></ModalNewList>
@@ -167,6 +178,13 @@ export default {
 
     <!-- MODAL DE LOADING -->
     <Loading v-if="loading"></Loading>
+
+    <!-- MODAL DE CONFIRMAÇÂO DE DELEÇÂO -->
+    <confirmDelete v-if="showModalDeleteInfos" 
+    :infos="this.deleteModalDeleteInfos" 
+    @close="this.showModalDeleteInfos=false"
+    @confirm="handleDeleleItem"
+    ></confirmDelete>
 </template>
 
 <style>
