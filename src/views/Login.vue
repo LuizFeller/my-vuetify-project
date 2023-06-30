@@ -20,7 +20,7 @@ export default {
     rules2: [
       (value) => {
         if (!value) return "Please enter your password!";
-        /* const condition =
+        const condition =
           value.length < 8 ||
           !/[!|@|#|$|%|^|&|*|(|)|-|_|+|=]/.test(value) ||
           !/[0-9]/.test(value);
@@ -28,7 +28,7 @@ export default {
         if (condition) {
           // return "No mínimo 8 caracteres, sendo 1 especial e 1 número";
           return "At least 8 characters, 1 special and 1 number!";
-        } */
+        }
         return true;
       },
     ],
@@ -66,6 +66,7 @@ export default {
   },
 };
 </script>
+/* :disabled="!isFormValid" */
 <template>
   <v-sheet width="600" class="" :class="sheetClasses">
     <v-form @submit.prevent v-model="isFormValid">
@@ -74,10 +75,9 @@ export default {
         label="Password"></v-text-field>
       <v-checkbox-btn v-model="showPassword" label="Show password!" color="black">
       </v-checkbox-btn>
-      <v-btn type="submit" color="light-green" :disabled="!isFormValid" @click="handSubmit" block
+      <v-btn type="submit" color="light-green"        @click="handSubmit" block
         class="mt-2 d-flex flex-md-column">Submit</v-btn>
     </v-form>
-
-    dúvidas -> 41 9.8756-0475
+    
   </v-sheet>
 </template>

@@ -16,12 +16,15 @@ export default{
 </script>
 
 <template>
+    <container>
+        
+    </container>
     <div class="container d-flex align-center justify-center">
         <v-card class="">
-            <v-card-title>Deseja excluir o item <b>{{infos[1]}}</b>?</v-card-title>
+            <v-card-title>Deseja excluir a Lista: <b>{{infos[1]}}</b>?</v-card-title>
             <v-actions>
-                <v-btn @click="close" class="w-50" color="red-lighten-3">CANCELAR</v-btn>
-                <v-btn @click="confirm" class="w-50" color="light-green-lighten-2">CONFIRMAR</v-btn>
+                <v-btn @click="close" class="mx-10 my-5" color="red-lighten-3">CANCELAR</v-btn>
+                <v-btn @click="confirm" class="mx-10 my-5" color="light-green-lighten-2">CONFIRMAR</v-btn>
             </v-actions>
         </v-card>
 
