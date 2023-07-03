@@ -113,18 +113,16 @@ export default {
 <template>
   <div>
     <nav class="w-100 d-flex justify-center">
-      <v-btn @click="openNewList = true" class="ma-2" color="green">
-        CRIAR LISTA
+      <v-btn @click="openNewList = true" class="ma-2" color="cyan-darken-2">
+        GERAR LISTA
       </v-btn>
-      <v-btn @click="HandleSummary" class="ma-2" color="grey"> RESUMO </v-btn>
+      <v-btn @click="HandleSummary" class="ma-2" color="cyan-darken-2">
+        RESUMO
+      </v-btn>
     </nav>
-    <!-- Excluido acima de dentro dos dois <v-btn variant="plain" e inserido o class="ma-2" e o color=green> -->
-    <!-- excluido acima do <nav class bg-blue -->
 
     <!-- COMPONENTE EM POTENCIAL -->
     <v-card class="w-100 d-flex flex-wrap">
-      <!-- <v-card-subtitle> {{ list.id }} </v-card-subtitle> -->
-
       <div v-for="list in lists">
         <v-card
           elevation="15"
@@ -132,18 +130,17 @@ export default {
           width="600"
           class="ma-4 d-flex flex-column justify-space-between"
         >
-          <v-card-title class="bg-red d-flex justify-center">
+          <v-card-title class="bg-grey-lighten-1 d-flex justify-center">
             {{ list.title }}
           </v-card-title>
           <v-card>
-            <!-- https://pixabay.com/photos/search/random/-->
             <v-img
-              src="https://picsum.photos/350/165?random"
+              src="https://picsum.photos/320/160?random"
               class="justify-center align-center"
             ></v-img>
           </v-card>
           <v-card-actions
-            class="bg-yellow d-flex justify-center align-end mt-auto"
+            class="bg-grey-darken-2 d-flex justify-center align-end mt-auto"
           >
             <v-btn color="black" @click="RedirectDetailItem(list.id)"
               ><span class="material-symbols-outlined">lists </span>
@@ -165,20 +162,6 @@ export default {
         </v-card>
       </div>
     </v-card>
-
-    <!-- MODELOS DE ICONS:
-    
-    <span class="material-symbols-outlined"> info </span> 
-    <v-icon icon="mdi-delete"> </v-icon>
-    <span class="material-symbols-outlined"> delete_forever </span>
-
-            <v-icon icon="fa:fas fa-edit"></v-icon>
-            <v-icon icon="fa:fas fa-list"></v-icon>
-            <v-icon icon="fa:fas fa-delete"></v-icon>
-
-            <v-icon :icon="`mdiSvg:${mdiPencil}`"></v-icon>
-            <v-icon :icon="`mdiSvg:${mdiShareVariant}`"></v-icon>
-            <v-icon :icon="`mdiSvg:${mdiDelete}`"></v-icon> -->
 
     <!-- CRIAR NOVA LISTA -->
     <ModalNewList
