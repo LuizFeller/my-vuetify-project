@@ -24,8 +24,8 @@ export default {
             <v-card-title>Nome da Lista</v-card-title>
             <v-text-field v-model="listName"></v-text-field>
             <v-actions class="d-flex justify-center">
-                <v-btn @click="handleCreateList" class="w-25 mx-2">Criar</v-btn>
-                <v-btn @click="closeModal" class="w-25 mx-2">Fechar</v-btn>
+                <v-btn @click="handleCreateList" :disabled="!listName" class="w-25 mx-2">Gerar</v-btn>
+                <v-btn @click="closeModal" class="w-25 mx-2">Cancelar</v-btn>
             </v-actions>
         </v-card>
 
