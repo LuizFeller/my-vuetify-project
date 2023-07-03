@@ -22,12 +22,12 @@ export default {
 
 <template>
     <v-card color="rgba(0, 0, 0, 0.5)" class="modal d-flex align-center justify-center">
-        <v-card class="w-50 pa-4">
+        <v-card class="pa-12">
 
             <div>
-                <p>Total de tarefas: {{ formatInfo[1] }}</p>
-                <p>Total de tarefas concluidas: {{ formatInfo[0] }}</p>
-                <p>Total de tarefas em aberto: {{ formatInfo[1] - formatInfo[0]}}</p>
+                <h4 class="ma-3">Total de tarefas: {{ formatInfo[1] }}</h4>
+                <p class="ml-6">Concluídas: {{ formatInfo[0] }}</p>
+                <p class="ml-6 mb-4">Em aberto: {{ formatInfo[1] - formatInfo[0]}}</p>
             </div>
 
             <v-card-actions>
