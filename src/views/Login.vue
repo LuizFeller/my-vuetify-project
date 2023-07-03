@@ -3,7 +3,7 @@ import { authApiMixin } from "@/api/auth";
 export default {
   mixins: [authApiMixin],
   data: () => ({
-    email: "eduardo@mail.com",
+    email: "luiz7@mail.com",
     rules1: [
       (value) => {
         if (!value) return "Please enter your email address!";
@@ -16,7 +16,7 @@ export default {
     ],
     isFormValid: true,
 
-    password: "1234",
+    password: "12345678!",
     rules2: [
       (value) => {
         if (!value) return "Please enter your password!";
@@ -47,9 +47,8 @@ export default {
         const { access_token } = data;
 
         localStorage.setItem("access_token", access_token);
-        this.$router.push('/home')
-
-      } catch(err) {
+        this.$router.push("/home");
+      } catch (err) {
         alert("Algo deu errado :(");
       }
     },
@@ -70,14 +69,31 @@ export default {
 <template>
   <v-sheet width="600" class="" :class="sheetClasses">
     <v-form @submit.prevent v-model="isFormValid">
-      <v-text-field v-model="email" :rules="rules1" label="Email"></v-text-field>
-      <v-text-field v-model="password" :rules="rules2" :type="showPassword ? 'text' : 'password'"
-        label="Password"></v-text-field>
-      <v-checkbox-btn v-model="showPassword" label="Show password!" color="black">
+      <v-text-field
+        v-model="email"
+        :rules="rules1"
+        label="Email"
+      ></v-text-field>
+      <v-text-field
+        v-model="password"
+        :rules="rules2"
+        :type="showPassword ? 'text' : 'password'"
+        label="Password"
+      ></v-text-field>
+      <v-checkbox-btn
+        v-model="showPassword"
+        label="Show password!"
+        color="black"
+      >
       </v-checkbox-btn>
-      <v-btn type="submit" color="light-green"        @click="handSubmit" block
-        class="mt-2 d-flex flex-md-column">Submit</v-btn>
+      <v-btn
+        type="submit"
+        color="light-green"
+        @click="handSubmit"
+        block
+        class="mt-2 d-flex flex-md-column"
+        >Submit</v-btn
+      >
     </v-form>
-    
   </v-sheet>
 </template>
