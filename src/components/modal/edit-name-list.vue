@@ -29,11 +29,11 @@ export default {
             <v-card-title>Nome atual: {{ name }}</v-card-title>
             <v-text-field v-model="newNameList" placeholder="Novo Nome"></v-text-field>
             <v-action class="d-flex justify-center">
-                <v-btn @click="handleUpdateListName" class="mx-15 my-5" color="light-green-lighten-2">
+                <v-btn @click="handleUpdateListName" class="mx-15 my-5" :disabled="!newNameList">
                     Atualizar
                 </v-btn>
-                <v-btn @click="closeModal" class="m-8 my-5" color="grey-darken-1">
-                    Fechar
+                <v-btn @click="closeModal" class="m-8 my-5">
+                    Cancelar
                 </v-btn>
             </v-action>
         </v-card>

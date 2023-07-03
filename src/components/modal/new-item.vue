@@ -31,7 +31,7 @@ export default {
             <v-text-field v-model="deadLineHour" type="time" :value="deadLineHour"></v-text-field>
             <v-actions class="d-flex justify-center">
                 <v-btn @click="handleCreateItemList" class="w-25 mx-2" >Criar</v-btn>
-                <v-btn @click="closeModal" class="w-25 mx-2" >Fechar</v-btn>
+                <v-btn @click="closeModal" class="w-25 mx-2" >Cancelar</v-btn>
             </v-actions>
         </v-card>
     </v-card>

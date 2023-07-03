@@ -49,12 +49,14 @@ export default {
         this.loading = false;
       }
     },
-
     handleResolveItem() {
       this.handleWithResponse(
         Promise.all(this.selected.map((el) => this.ResolveItem(el)))
       );
       this.selected = [];
+    },
+    closedModal() {
+      this.$emit("close-modal");
     },
 
     async handleShowDetail(id) {
@@ -94,7 +96,7 @@ export default {
 
     /* METODO DE ESTILIZAÇÂO */
     bgColor(a) {
-      return a == true ? "bg-light-green-lighten-2" : "bg-red-lighten-3";
+      return a == true ? "bg-light-green-lighten-2" : "bg-grey-lighten-1";
     },
 
     /* ORGANIZAR A LISTA CONFORME DEADLINE */
@@ -126,12 +128,19 @@ export default {
     </v-col>
 
     <v-col class="d-flex justify-center">
-      <v-btn class="ma-2" color="green" @click="showNewItemForm = true">
+      <v-btn class="ma-2" color="grey-darken-1" @click="showNewItemForm = true">
         CRIAR NOVO ITEM
       </v-btn>
     </v-col>
-    <v-col class="d-flex justify-center" @click="handleResolveItem">
-      <v-btn class="ma-2" color="green"> SALVAR </v-btn>
+    <v-col class="d-flex justify-center">
+      <v-btn
+        @click="handleResolveItem"
+        class="ma-2"
+        color="grey-darken-1"
+        :disabled="selected.length == 0"
+      >
+        SALVAR
+      </v-btn>
     </v-col>
 
     <v-col class="d-flex align-center">
@@ -155,9 +164,9 @@ export default {
           v-model="selected"
           :value="item.id"
           v-if="!item.done"
-        >
-        </v-checkbox
-      ></v-col>
+          >Concluir
+        </v-checkbox></v-col
+      >
       <v-col cols="1"
         ><v-btn @click="handleShowDetail(item.id)">
           <span class="material-symbols-outlined"> info </span></v-btn
@@ -173,7 +182,7 @@ export default {
 
   <!-- COMPONENTE DE AVISO SE CASO NÂO EXISTA POSTS -->
   <v-snackbar v-model="snackbar" color="green">
-    Não há tarefas abertas!
+    Não há tarefas pendentes!
     <template v-slot:actions>
       <v-btn color="white" variant="tonal" @click="snackbar = false">
         Close

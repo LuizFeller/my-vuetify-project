@@ -23,8 +23,8 @@ export default{
         <v-card class="">
             <v-card-title>Deseja excluir a Lista: <b>{{infos[1]}}</b>?</v-card-title>
             <v-actions>
-                <v-btn @click="close" class="mx-10 my-5" color="red-lighten-3">CANCELAR</v-btn>
-                <v-btn @click="confirm" class="mx-10 my-5" color="light-green-lighten-2">CONFIRMAR</v-btn>
+                <v-btn @click="confirm" class="mx-10 my-5" color="grey-lighten-2">CONFIRMAR</v-btn>
+                <v-btn @click="close" class="mx-10 my-5" color="grey-lighten-2">CANCELAR</v-btn>
             </v-actions>
         </v-card>
 
